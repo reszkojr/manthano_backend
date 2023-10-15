@@ -3,8 +3,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from django.contrib.auth.models import User
-
+from authentication.models import ManthanoUser
 from . import serializers
 
 
@@ -21,6 +20,6 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
+    queryset = ManthanoUser.objects.all()
     permission_classes = (permissions.AllowAny,)
     serializer_class = serializers.RegisterSerializer
