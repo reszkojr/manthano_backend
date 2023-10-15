@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def classroom_home(request, classroom_code):
+    print(f'Hello world, {request.user}!')

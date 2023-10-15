@@ -4,8 +4,8 @@ from django.db import models
 class Classroom(models.Model):
     name = models.CharField(max_length=255)
     code = models.CharField(max_length=11, default='')
-    description = models.TextField()
-    schedule = models.ImageField(upload_to='uploads/schedule_%Y_%m_%d')
+    description = models.TextField(max_length=255, blank=True, null=False, default='')
+    schedule = models.ImageField(upload_to='uploads/schedule_%Y_%m_%d', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
