@@ -5,11 +5,13 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt import authentication
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from authentication.models import ManthanoUser
+from classroom.models import Classroom
 
 from classroom.serializers import ClassroomSerializer
 
 
-class CreateClassroom(APIView):
+class CreateClassroomView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
@@ -19,3 +21,16 @@ class CreateClassroom(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class JoinClassroomView(APIView):
+    def post(self, request, classroom_code, format=None):
+        try:
+            classroom = Classroom.objects.get(code=classroom_code)
+        except Classroom.DoesNotExist:
+            return Response('Classroom not found.', status=status.HTTP_404_NOT_FOUND)
+        user: ManthanoUser = request.user
+        user.classroom = classroom
+        user.save()
+
+        return Response(f'User {user} joined classroom {classroom.name} successfully.')
