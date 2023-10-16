@@ -24,12 +24,17 @@ class CreateClassroomView(APIView):
 
 
 class JoinClassroomView(APIView):
-    def post(self, request, classroom_code, format=None):
+    def post(self, request, format=None):
+        classroom_code = request.data.get('classroom_code')
         try:
             classroom = Classroom.objects.get(code=classroom_code)
         except Classroom.DoesNotExist:
             return Response('Classroom not found.', status=status.HTTP_404_NOT_FOUND)
+
         user: ManthanoUser = request.user
+        if user.classroom:
+            return Response('Your Classroom is already defined.', status=status.HTTP_400_BAD_REQUEST)
+
         user.classroom = classroom
         user.save()
 
