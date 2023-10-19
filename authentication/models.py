@@ -47,6 +47,9 @@ class ManthanoUser(AbstractUser):
         verbose_name = 'username'
         verbose_name_plural = 'usernames'
 
+    def __str__(self):
+        return self.username
+
     def get_full_name(self):
         return ('%s %s' % (self.first_name, self.last_name)).strip()
 
