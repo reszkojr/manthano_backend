@@ -47,8 +47,11 @@ class TokenAuthMiddleware(BaseMiddleware):
         try:
             # This will automatically validate the token and raise an error if token is invalid
             UntypedToken(token)
-        except (InvalidToken, TokenError) as e:
-            return None
+        except (InvalidToken, TokenError):
+            return await send({
+                "type": "websocket.close",
+                "code": 401
+            })
 
         decoded_data = jwt_decode(token, settings.SECRET_KEY, algorithms=['HS256'])
         user = await get_user(validated_token=decoded_data)
@@ -59,6 +62,4 @@ class TokenAuthMiddleware(BaseMiddleware):
                 "code": 403
             })
         scope["user"] = user
-        return await super().__call__(scope, receive, send)
-
         return await super().__call__(scope, receive, send)
