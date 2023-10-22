@@ -33,6 +33,8 @@ class ChannelConsumer(AsyncWebsocketConsumer):
         data = {
             "type": 'chat_message',
             "user": user.username,
+            "user_id": user.id,
+            "avatar": '',
             "message": msg,
         }
 
