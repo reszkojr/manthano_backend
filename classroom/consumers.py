@@ -34,7 +34,7 @@ class ChannelConsumer(AsyncWebsocketConsumer):
             "type": 'chat_message',
             "user": user.username,
             "user_id": user.id,
-            "avatar": '',
+            "avatar": 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnIKokCKPGuGwDDP1oqr80tYlIzdxTmxh8CQ&usqp=CAU',
             "message": msg,
         }
 
