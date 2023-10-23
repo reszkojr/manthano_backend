@@ -39,3 +39,13 @@ class JoinClassroomView(APIView):
         user.save()
 
         return Response(f'User {user} joined classroom {classroom.name} successfully.')
+
+
+class GetUserClassroomView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user: ManthanoUser = request.user
+        if user.classroom is not None:
+            return Response({'classroom_code': user.classroom.code}, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_404_NOT_FOUND)
