@@ -1,15 +1,31 @@
 from django.contrib.auth import get_user_model
 
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 
 import json
 
+from classroom.models import Classroom
+
 
 class ChannelConsumer(AsyncWebsocketConsumer):
+
+    @database_sync_to_async
+    def check_user_classroom(self, user, classroom):
+        return user.classroom != classroom
+
     async def connect(self):
-        classroom_channel = self.scope["url_route"]["kwargs"]["classroom_code"]
-        self.group_name = classroom_channel
+        classroom_code = self.scope["url_route"]["kwargs"]["classroom_code"]
+        self.group_name = classroom_code
+
+        try:
+            classroom = await database_sync_to_async(Classroom.objects.get)(code=classroom_code)
+        except:
+            return await self.close()
+
+        if await self.check_user_classroom(self.scope['user'], classroom):
+            return await self.close()
 
         await self.channel_layer.group_add(
             self.group_name,
