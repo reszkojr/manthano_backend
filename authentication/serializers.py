@@ -5,6 +5,8 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
+from django.contrib.auth import get_user_model
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=ManthanoUser.objects.all())])
@@ -36,3 +38,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             'first_name': {'required': True},
             'last_name': {'required': True},
         }
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'username,' 'email', 'first_name', 'last_name')

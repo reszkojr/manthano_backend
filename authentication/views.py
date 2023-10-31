@@ -1,5 +1,6 @@
 from rest_framework import views, permissions, status, generics
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -23,3 +24,11 @@ class RegisterView(generics.CreateAPIView):
     queryset = ManthanoUser.objects.all()
     permission_classes = (permissions.AllowAny,)
     serializer_class = serializers.RegisterSerializer
+
+
+class UserInformation(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        serializer = serializers.UserSerializer(request.user)
+        return Response(serializer.data)
