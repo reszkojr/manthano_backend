@@ -6,7 +6,7 @@ from channels.layers import get_channel_layer
 
 import json
 
-from classroom.models import Classroom
+from classroom.models import *
 
 
 class ChannelConsumer(AsyncWebsocketConsumer):
@@ -17,10 +17,18 @@ class ChannelConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         classroom_code = self.scope["url_route"]["kwargs"]["classroom_code"]
+        channel_name = self.scope["url_route"]["kwargs"]["channel_name"]
         self.group_name = classroom_code
 
         try:
-            classroom = await database_sync_to_async(Classroom.objects.get)(code=classroom_code)
+            classroom = await database_sync_to_async(Classroom.objects.get)(code=classroom_code,)
+            print("classroom: %s" % classroom)
+        except:
+            return await self.close()
+
+        try:
+            channel = await database_sync_to_async(Channel.objects.get)(name=channel_name, classroom=classroom)
+            print("channel: %s" % channel)
         except:
             return await self.close()
 
