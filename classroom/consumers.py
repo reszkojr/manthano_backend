@@ -22,13 +22,11 @@ class ChannelConsumer(AsyncWebsocketConsumer):
 
         try:
             classroom = await database_sync_to_async(Classroom.objects.get)(code=classroom_code,)
-            print("classroom: %s" % classroom)
         except:
             return await self.close()
 
         try:
             channel = await database_sync_to_async(Channel.objects.get)(name=channel_name, classroom=classroom)
-            print("channel: %s" % channel)
         except:
             return await self.close()
 

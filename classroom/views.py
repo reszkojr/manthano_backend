@@ -49,3 +49,16 @@ class GetUserClassroomView(APIView):
         if user.classroom is not None:
             return Response({'classroom_code': user.classroom.code}, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class GetClassroomChannelsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user: ManthanoUser = request.user
+        response = {}
+        for i in user.classroom.channels.all():
+            response[i.id] = i.name
+        if user.classroom is not None:
+            return Response(response, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_404_NOT_FOUND)
