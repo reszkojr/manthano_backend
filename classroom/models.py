@@ -1,5 +1,7 @@
 from django.db import models
 
+from authentication.models import ManthanoUser
+
 
 class Classroom(models.Model):
     name = models.CharField(max_length=255)
@@ -14,10 +16,16 @@ class Classroom(models.Model):
 
 
 class Channel(models.Model):
-    name = models.CharField(max_length=255)
-    group_name = models.CharField(max_length=100)
-
     classroom = models.ForeignKey('classroom.Classroom', on_delete=models.CASCADE, default='', related_name='channels')
+
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
+
+
+class Message(models.Model):
+    user = models.ForeignKey(ManthanoUser, related_name='messages', null=True, on_delete=models.SET_NULL)
+    channel = models.ForeignKey(Channel, related_name='messages', on_delete=models.CASCADE)
+    text = models.TextField(max_length=255)
+    date = models.DateField(auto_now_add=True)
