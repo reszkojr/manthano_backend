@@ -6,7 +6,7 @@ from rest_framework_simplejwt import authentication
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from authentication.models import ManthanoUser
-from classroom.models import Classroom
+from classroom.models import *
 
 from classroom.serializers import ClassroomSerializer
 
@@ -62,3 +62,24 @@ class GetClassroomChannelsView(APIView):
         if user.classroom is not None:
             return Response(response, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class GetChannelMessagesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        response = {}
+
+        channel_name = request.query_params.get('channel_name')
+        try:
+            channel = Channel.objects.get(classroom=request.user.classroom, name=channel_name)
+        except Channel.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        messages = Message.objects.filter(channel__classroom=request.user.classroom, channel=channel)
+        if messages.count() == 0:
+            return Response([], status=status.HTTP_200_OK)
+
+        for msg in messages:
+            response[msg.id] = msg
+        return Response(response, status=status.HTTP_200_OK)

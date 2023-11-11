@@ -8,5 +8,6 @@ urlpatterns = [
     path('join/', views.JoinClassroomView.as_view(), name='join_classroom'),
     path('user/', views.GetUserClassroomView.as_view(), name='user_classroom'),
     path('channels/', views.GetClassroomChannelsView.as_view(), name='channels_classroom'),
+    path('messages', views.GetChannelMessagesView.as_view(), name='messages_classroom'),
     # path('<slug:code>/<slug:channel>', views.classroom, name='classroom'),
 ]
