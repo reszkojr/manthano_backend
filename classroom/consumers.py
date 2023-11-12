@@ -11,6 +11,9 @@ from classroom.models import *
 
 class ChannelConsumer(AsyncWebsocketConsumer):
 
+    classroom = None
+    channel = None
+
     @database_sync_to_async
     def check_user_classroom(self, user, classroom):
         return user.classroom != classroom
@@ -21,16 +24,16 @@ class ChannelConsumer(AsyncWebsocketConsumer):
         self.group_name = classroom_code
 
         try:
-            classroom = await database_sync_to_async(Classroom.objects.get)(code=classroom_code,)
+            self.classroom = await database_sync_to_async(Classroom.objects.get)(code=classroom_code,)
         except:
             return await self.close()
 
         try:
-            channel = await database_sync_to_async(Channel.objects.get)(name=channel_name, classroom=classroom)
+            self.channel = await database_sync_to_async(Channel.objects.get)(name=channel_name, classroom=self.classroom)
         except:
             return await self.close()
 
-        if await self.check_user_classroom(self.scope['user'], classroom):
+        if await self.check_user_classroom(self.scope['user'], self.classroom):
             return await self.close()
 
         await self.channel_layer.group_add(
@@ -59,6 +62,9 @@ class ChannelConsumer(AsyncWebsocketConsumer):
             "avatar": 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnIKokCKPGuGwDDP1oqr80tYlIzdxTmxh8CQ&usqp=CAU',
             "message": msg,
         }
+
+        message = await database_sync_to_async(Message.objects.create)(user=user, text=msg, channel=self.channel)
+        print(message)
 
         await self.channel_layer.group_send(
             self.group_name,
