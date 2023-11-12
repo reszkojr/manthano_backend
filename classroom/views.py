@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 
 from rest_framework import status
@@ -8,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from authentication.models import ManthanoUser
 from classroom.models import *
 
-from classroom.serializers import ClassroomSerializer
+from classroom.serializers import ClassroomSerializer, MessageSerializer
 
 
 class CreateClassroomView(APIView):
@@ -68,8 +69,6 @@ class GetChannelMessagesView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        response = {}
-
         channel_name = request.query_params.get('channel_name')
         try:
             channel = Channel.objects.get(classroom=request.user.classroom, name=channel_name)
@@ -80,6 +79,5 @@ class GetChannelMessagesView(APIView):
         if messages.count() == 0:
             return Response([], status=status.HTTP_200_OK)
 
-        for msg in messages:
-            response[msg.id] = msg
-        return Response(response, status=status.HTTP_200_OK)
+        serializer = (MessageSerializer(messages, many=True))
+        return Response(serializer.data, status=status.HTTP_200_OK)

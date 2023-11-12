@@ -53,18 +53,17 @@ class ChannelConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
 
         user = self.scope["user"]
-        msg = text_data_json["message"]
+        msg = text_data_json["text"]
+
+        message = await database_sync_to_async(Message.objects.create)(user=user, text=msg, channel=self.channel)
 
         data = {
             "type": 'chat_message',
-            "user": user.username,
-            "user_id": user.id,
-            "avatar": 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnIKokCKPGuGwDDP1oqr80tYlIzdxTmxh8CQ&usqp=CAU',
-            "message": msg,
+            "id": message.id,
+            "user": message.user.username,
+            "avatar": '/message.user.profile.profile_picture',
+            "text": message.text,
         }
-
-        message = await database_sync_to_async(Message.objects.create)(user=user, text=msg, channel=self.channel)
-        print(message)
 
         await self.channel_layer.group_send(
             self.group_name,
@@ -75,6 +74,6 @@ class ChannelConsumer(AsyncWebsocketConsumer):
         response = {
             'type': 'websocket.send',
             'user': event['user'],
-            'message': event['message']
+            'text': event['text']
         }
         await self.send(json.dumps(event))
