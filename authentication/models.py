@@ -60,8 +60,8 @@ class ManthanoUser(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField("authentication.ManthanoUser", on_delete=models.CASCADE)
 
-    profile_picture = models.ImageField(default='default-pp.png', upload_to='profile_images/')
-    profile_background = models.ImageField(default='default-pb.png', upload_to='profile_backgrounds/')
+    profile_picture = models.ImageField(null=True, upload_to='profile_images/')
+    profile_background = models.ImageField(null=True, upload_to='profile_backgrounds/')
 
     desc = models.TextField('Description', null=True, blank=True)
 
