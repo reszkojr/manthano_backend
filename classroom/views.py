@@ -47,7 +47,8 @@ class GetUserClassroomView(APIView):
     def get(self, request):
         user: ManthanoUser = request.user
         if user.classroom is not None:
-            return Response({'classroom_code': user.classroom.code}, status=status.HTTP_200_OK)
+            serializer = ClassroomSerializer(user.classroom)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
