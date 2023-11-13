@@ -21,7 +21,7 @@ class ChannelConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         classroom_code = self.scope["url_route"]["kwargs"]["classroom_code"]
         channel_name = self.scope["url_route"]["kwargs"]["channel_name"]
-        self.group_name = classroom_code + "." + channel_name
+        self.group_name = classroom_code + "." + channel_name.replace(' ', '')
 
         try:
             self.classroom = await database_sync_to_async(Classroom.objects.get)(code=classroom_code,)
@@ -61,7 +61,7 @@ class ChannelConsumer(AsyncWebsocketConsumer):
             "type": 'chat_message',
             "id": message.id,
             "user": message.user.username,
-            "avatar": '/message.user.profile.profile_picture',
+            "avatar": 'https://static.vecteezy.com/system/resources/previews/024/983/914/non_2x/simple-user-default-icon-free-png.png',
             "text": message.text,
         }
 
