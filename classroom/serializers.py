@@ -8,6 +8,11 @@ class ClassroomSerializer(serializers.ModelSerializer):
         model = Classroom
         fields = '__all__'
 
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret['channels'] = ChannelSerializer(instance.channels, many=True).data
+        return ret
+
 
 class ChannelSerializer(serializers.ModelSerializer):
     class Meta:
