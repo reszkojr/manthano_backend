@@ -3,13 +3,12 @@ from django.shortcuts import render
 
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework_simplejwt import authentication
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from authentication.models import ManthanoUser
 from classroom.models import *
 
-from classroom.serializers import ClassroomSerializer, MessageSerializer
+from classroom.serializers import *
 
 
 class CreateClassroomView(APIView):
@@ -81,3 +80,17 @@ class GetChannelMessagesView(APIView):
 
         serializer = (MessageSerializer(messages, many=True))
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CreateChannelView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user: ManthanoUser = request.user
+        channel_name = request.data.get('channel_name')
+
+        channel = Channel.objects.create(name=channel_name, classroom=user.classroom)
+
+        serializedChannel = ChannelSerializer(channel)
+
+        return Response(serializedChannel.data, content_type='application/json', status=status.HTTP_201_CREATED)

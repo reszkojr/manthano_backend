@@ -9,5 +9,6 @@ urlpatterns = [
     path('user/', views.GetUserClassroomView.as_view(), name='user_classroom'),
     path('channels/', views.GetClassroomChannelsView.as_view(), name='channels_classroom'),
     path('messages/', views.GetChannelMessagesView.as_view(), name='messages_classroom'),
+    path('channel/add', views.CreateChannelView.as_view(), name='channel_classroom'),
     # path('<slug:code>/<slug:channel>', views.classroom, name='classroom'),
 ]
