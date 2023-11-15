@@ -90,7 +90,14 @@ class AddChannelView(APIView):
         user: ManthanoUser = request.user
         channel_name = request.data.get('channel_name')
 
-        channel = Channel.objects.create(name=channel_name, classroom=user.classroom)
+        channel, created = Channel.objects.get_or_create(name=channel_name, classroom=user.classroom)
+        if not created:
+            response = {
+                'error': {
+                    'message': f'Channel with name "{channel.name}" already exists.'
+                }
+            }
+            return Response(json.dumps(response), content_type='application/json', status=status.HTTP_400_BAD_REQUEST)
 
         serializedChannel = ChannelSerializer(channel)
 
