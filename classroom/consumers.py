@@ -21,7 +21,6 @@ class ChannelConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         classroom_code = self.scope["url_route"]["kwargs"]["classroom_code"]
         channel_name = self.scope["url_route"]["kwargs"]["channel_name"]
-        self.group_name = classroom_code + "." + channel_name.replace(' ', '')
 
         try:
             self.classroom = await database_sync_to_async(Classroom.objects.get)(code=classroom_code,)
@@ -32,6 +31,8 @@ class ChannelConsumer(AsyncWebsocketConsumer):
             self.channel = await database_sync_to_async(Channel.objects.get)(name=channel_name, classroom=self.classroom)
         except:
             return await self.close()
+
+        self.group_name = str(self.classroom.id) + "." + str(self.channel.id)
 
         if await self.check_user_classroom(self.scope['user'], self.classroom):
             return await self.close()
