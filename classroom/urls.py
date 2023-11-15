@@ -10,6 +10,7 @@ urlpatterns = [
 
     path('channels/', views.GetClassroomChannelsView.as_view(), name='channels_classroom'),
     path('channel/add', views.AddChannelView.as_view(), name='channel_add_classroom'),
+    path('channel/edit/<int:id>', views.UpdateChannelView.as_view(), name='channel_edit_classroom'),
     path('channel/delete/<int:id>', views.DeleteChannelView.as_view(), name='channel_remove_classroom'),
 
     path('messages/', views.GetChannelMessagesView.as_view(), name='messages_classroom'),

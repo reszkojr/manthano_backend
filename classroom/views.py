@@ -2,7 +2,8 @@ import json
 from django.shortcuts import render
 
 from rest_framework import status
-from rest_framework.views import APIView
+from rest_framework import views
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from authentication.models import ManthanoUser
@@ -11,7 +12,7 @@ from classroom.models import *
 from classroom.serializers import *
 
 
-class CreateClassroomView(APIView):
+class CreateClassroomView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
@@ -23,7 +24,7 @@ class CreateClassroomView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class JoinClassroomView(APIView):
+class JoinClassroomView(views.APIView):
     def post(self, request, format=None):
         classroom_code = request.data.get('classroom_code')
         try:
@@ -41,7 +42,7 @@ class JoinClassroomView(APIView):
         return Response(f'User {user} joined classroom {classroom.name} successfully.')
 
 
-class GetUserClassroomView(APIView):
+class GetUserClassroomView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -52,7 +53,7 @@ class GetUserClassroomView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class GetClassroomChannelsView(APIView):
+class GetClassroomChannelsView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -65,7 +66,7 @@ class GetClassroomChannelsView(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class GetChannelMessagesView(APIView):
+class GetChannelMessagesView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
@@ -83,7 +84,7 @@ class GetChannelMessagesView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class AddChannelView(APIView):
+class AddChannelView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -104,7 +105,24 @@ class AddChannelView(APIView):
         return Response(serializedChannel.data, content_type='application/json', status=status.HTTP_201_CREATED)
 
 
-class DeleteChannelView(APIView):
+class UpdateChannelView(generics.UpdateAPIView):
+    queryset = Channel.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = ChannelSerializer
+    lookup_field = 'id'
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        newChannel = json.loads(request.data.get('channel'))
+        serializer = self.get_serializer(instance, data=newChannel, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteChannelView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, id):
