@@ -83,7 +83,7 @@ class GetChannelMessagesView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class CreateChannelView(APIView):
+class AddChannelView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -95,3 +95,15 @@ class CreateChannelView(APIView):
         serializedChannel = ChannelSerializer(channel)
 
         return Response(serializedChannel.data, content_type='application/json', status=status.HTTP_201_CREATED)
+
+
+class DeleteChannelView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, id):
+        user: ManthanoUser = request.user
+        try:
+            channel = Channel.objects.get(id=id).delete()
+        except Channel.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(json.dumps(channel), content_type='application/json', status=status.HTTP_201_CREATED)
