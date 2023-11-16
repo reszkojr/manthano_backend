@@ -62,6 +62,7 @@ class ChannelConsumer(AsyncWebsocketConsumer):
             "type": 'chat_message',
             "id": message.id,
             "user": message.user.username,
+            "date": message.date.strftime("%Y-%m-%d"),
             "avatar": 'https://static.vecteezy.com/system/resources/previews/024/983/914/non_2x/simple-user-default-icon-free-png.png',
             "text": message.text,
         }
