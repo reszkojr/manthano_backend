@@ -29,3 +29,4 @@ class Message(models.Model):
     channel = models.ForeignKey(Channel, related_name='messages', on_delete=models.CASCADE)
     text = models.TextField(max_length=255)
     date = models.DateField(auto_now_add=True)
+    edited = models.BooleanField(default=False)
