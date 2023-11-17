@@ -132,3 +132,35 @@ class DeleteChannelView(views.APIView):
         except Channel.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         return Response(json.dumps(channel), content_type='application/json', status=status.HTTP_201_CREATED)
+
+
+class UpdateMessageView(generics.UpdateAPIView):
+    queryset = Message.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = MessageSerializer
+    lookup_field = 'id'
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        newMessage = json.loads(request.data.get('message'))
+        newMessage['edited'] = True
+
+        serializer = self.get_serializer(instance, data=newMessage, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteMessageView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, id):
+        user: ManthanoUser = request.user
+        try:
+            message = Message.objects.get(id=id).delete()
+        except Channel.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(json.dumps(message), content_type='application/json', status=status.HTTP_201_CREATED)
