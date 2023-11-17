@@ -61,7 +61,8 @@ class ChannelConsumer(AsyncWebsocketConsumer):
         data = {
             "type": 'chat_message',
             "id": message.id,
-            "user": message.user.username,
+            "user_id": message.user.id,
+            "username": message.user.username,
             "date": message.date.strftime("%Y-%m-%d"),
             "avatar": 'https://static.vecteezy.com/system/resources/previews/024/983/914/non_2x/simple-user-default-icon-free-png.png',
             "text": message.text,
@@ -75,7 +76,8 @@ class ChannelConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         response = {
             'type': 'websocket.send',
-            'user': event['user'],
+            'user_id': event['user_id'],
+            'username': event['username'],
             'text': event['text']
         }
         await self.send(json.dumps(event))
