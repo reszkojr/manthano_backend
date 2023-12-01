@@ -30,3 +30,7 @@ class Message(models.Model):
     text = models.TextField(max_length=255)
     date = models.DateField(auto_now_add=True)
     edited = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('channel', 'user', 'date')
+        
