@@ -17,20 +17,24 @@ class Classroom(models.Model):
 
 class Channel(models.Model):
     classroom = models.ForeignKey('classroom.Classroom', on_delete=models.CASCADE, default='', related_name='channels')
-
     name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
 
+class JitsiChannel(models.Model):
+    classroom = models.ForeignKey('classroom.Classroom', on_delete=models.CASCADE, default='', related_name='jitsi_channels')
+    name = models.CharField(max_length=255)
+    room_name = models.CharField(max_length=255)
+
+
 class Message(models.Model):
     user = models.ForeignKey(ManthanoUser, related_name='messages', null=True, on_delete=models.SET_NULL)
     channel = models.ForeignKey(Channel, related_name='messages', on_delete=models.CASCADE)
     text = models.TextField(max_length=255)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
     edited = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('channel', 'user', 'date')
-        

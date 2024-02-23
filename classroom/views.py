@@ -66,6 +66,19 @@ class GetClassroomChannelsView(views.APIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
+class GetClassroomJitsiChannelsView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user: ManthanoUser = request.user
+        response = {}
+        for i in user.classroom.jitsi_channels.all():
+            response[i.id] = i.name
+        if user.classroom is not None:
+            return Response(response, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
 class GetChannelMessagesView(views.APIView):
     permission_classes = [IsAuthenticated]
 
@@ -105,10 +118,49 @@ class AddChannelView(views.APIView):
         return Response(serializedChannel.data, content_type='application/json', status=status.HTTP_201_CREATED)
 
 
+class AddJitsiChannelView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user: ManthanoUser = request.user
+        channel_name = request.data.get('channel_name')
+
+        channel, created = JitsiChannel.objects.get_or_create(
+            name=channel_name, classroom=user.classroom, room_name=channel_name)
+        if not created:
+            response = {
+                'error': {
+                    'message': f'Channel with name "{channel.name}" already exists.'
+                }
+            }
+            return Response(json.dumps(response), content_type='application/json', status=status.HTTP_400_BAD_REQUEST)
+
+        serializedChannel = JitsiChannelSerializer(channel)
+
+        return Response(serializedChannel.data, content_type='application/json', status=status.HTTP_201_CREATED)
+
+
 class UpdateChannelView(generics.UpdateAPIView):
     queryset = Channel.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = ChannelSerializer
+    lookup_field = 'id'
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        newChannel = json.loads(request.data.get('channel'))
+        serializer = self.get_serializer(instance, data=newChannel, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateJitsiChannelView(generics.UpdateAPIView):
+    queryset = JitsiChannel.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = JitsiChannelSerializer
     lookup_field = 'id'
 
     def update(self, request, *args, **kwargs):
@@ -130,6 +182,18 @@ class DeleteChannelView(views.APIView):
         try:
             channel = Channel.objects.get(id=id).delete()
         except Channel.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(json.dumps(channel), content_type='application/json', status=status.HTTP_201_CREATED)
+
+
+class DeleteJitsiChannelView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, id):
+        user: ManthanoUser = request.user
+        try:
+            channel = JitsiChannel.objects.get(id=id).delete()
+        except JitsiChannel.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         return Response(json.dumps(channel), content_type='application/json', status=status.HTTP_201_CREATED)
 
