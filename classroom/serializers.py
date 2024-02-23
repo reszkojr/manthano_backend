@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, validators
 
 from .models import *
 
@@ -24,6 +24,13 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = '__all__'
+
+        validators = [
+            validators.UniqueTogetherValidator(
+                queryset=model.objects.all(),
+                fields=('user', 'date', 'text'),
+            )
+        ]
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
