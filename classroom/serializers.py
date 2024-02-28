@@ -11,6 +11,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         ret['channels'] = ChannelSerializer(instance.channels, many=True).data
+        ret['jitsi_channels'] = JitsiChannelSerializer(instance.jitsi_channels, many=True).data
         return ret
 
 
