@@ -71,11 +71,10 @@ class GetClassroomJitsiChannelsView(views.APIView):
 
     def get(self, request):
         user: ManthanoUser = request.user
-        response = {}
-        for i in user.classroom.jitsi_channels.all():
-            response[i.id] = i.name
+        serializer = JitsiChannelSerializer(user.classroom.jitsi_channels.all(), many=True)
+
         if user.classroom is not None:
-            return Response(response, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
