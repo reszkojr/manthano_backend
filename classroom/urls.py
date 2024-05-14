@@ -21,5 +21,7 @@ urlpatterns = [
     path('messages/', views.GetChannelMessagesView.as_view(), name='messages_classroom'),
     path('message/edit/<int:id>', views.UpdateMessageView.as_view(), name='message_edit_classroom'),
     path('message/delete/<int:id>', views.DeleteMessageView.as_view(), name='message_remove_classroom'),
+
+    path('users', views.GetClassroomUsersView.as_view(), name='users_classroom')
     # path('<slug:code>/<slug:channel>', views.classroom, name='classroom'),
 ]

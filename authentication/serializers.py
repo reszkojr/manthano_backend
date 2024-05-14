@@ -44,3 +44,16 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('id', 'username,' 'email', 'first_name', 'last_name')
+
+
+class ClassroomUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'first_name', 'last_name', 'username')
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret['profile_picture'] = instance.profile.profile_picture or None
+        ret['profile_background'] = instance.profile.profile_background or None
+        return ret

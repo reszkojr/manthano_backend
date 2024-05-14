@@ -7,6 +7,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from authentication.models import ManthanoUser
+from authentication.serializers import ClassroomUserSerializer, UserSerializer
 from classroom.models import *
 
 from classroom.serializers import *
@@ -227,3 +228,12 @@ class DeleteMessageView(views.APIView):
         except Channel.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         return Response(json.dumps(message), content_type='application/json', status=status.HTTP_201_CREATED)
+
+
+class GetClassroomUsersView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user: ManthanoUser = request.user
+        serializedUsers = ClassroomUserSerializer(user.classroom.users.all(), many=True)
+        return serializedUsers.data
