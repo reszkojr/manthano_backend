@@ -1,5 +1,7 @@
 from rest_framework import serializers, validators
 
+from authentication.serializers import ClassroomUserSerializer
+
 from .models import *
 
 
@@ -12,6 +14,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
         ret = super().to_representation(instance)
         ret['channels'] = ChannelSerializer(instance.channels, many=True).data
         ret['jitsi_channels'] = JitsiChannelSerializer(instance.jitsi_channels, many=True).data
+        ret['users'] = ClassroomUserSerializer(instance.users, many=True).data
         return ret
 
 

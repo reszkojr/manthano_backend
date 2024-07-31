@@ -36,7 +36,7 @@ class ManthanoUser(AbstractUser):
     date_joined = models.DateTimeField('Date joined', auto_now_add=True)
 
     classroom = models.ForeignKey('classroom.Classroom', on_delete=models.CASCADE,
-                                  related_name='classrooms', null=True)
+                                  related_name='users', null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'password']
