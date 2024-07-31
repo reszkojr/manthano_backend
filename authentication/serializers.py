@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate
-from authentication.models import ManthanoUser
+from authentication.models import *
 from django.contrib.auth.password_validation import validate_password
 
 from rest_framework import serializers
@@ -57,3 +57,15 @@ class ClassroomUserSerializer(serializers.ModelSerializer):
         ret['profile_picture'] = instance.profile.profile_picture or None
         ret['profile_background'] = instance.profile.profile_background or None
         return ret
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['enrollment']
+
+
+class ProfessorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Professor
+        fields = ['academic_rank', 'subjects']

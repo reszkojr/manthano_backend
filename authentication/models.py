@@ -31,12 +31,13 @@ class ManthanoUser(AbstractUser):
     first_name = models.CharField('First name', max_length=32)
     last_name = models.CharField('Last name', max_length=255)
     email = models.EmailField('Email address', max_length=255, unique=True)
+    academic_email = models.CharField(max_length=255, unique=True, default='')
     is_admin = models.BooleanField('Admin status', default=False)
     is_active = models.BooleanField('Active', default=True)
     date_joined = models.DateTimeField('Date joined', auto_now_add=True)
+    is_teacher = models.BooleanField('Staff', default=False)
 
-    classroom = models.ForeignKey('classroom.Classroom', on_delete=models.CASCADE,
-                                  related_name='users', null=True)
+    classroom = models.ForeignKey('classroom.Classroom', on_delete=models.CASCADE, related_name='users', null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'password']
@@ -57,8 +58,26 @@ class ManthanoUser(AbstractUser):
         return self.first_name
 
 
+class Subject(models.Model):
+    name = models.CharField(max_length=255, blank=False, null=False)
+
+    def __str__(self):
+        return self.name
+
+
+class Student(models.Model):
+    user = models.OneToOneField(ManthanoUser, on_delete=models.CASCADE, related_name='user_student')
+    enrollment = models.CharField(max_length=255, blank=False, null=False, unique=True)
+
+
+class Professor(models.Model):
+    user = models.OneToOneField(ManthanoUser, on_delete=models.CASCADE, related_name='user_professor')
+    academic_rank = models.CharField(max_length=255, blank=True, null=True)
+    subjects = models.ManyToManyField(Subject, related_name='professors')
+
+
 class Profile(models.Model):
-    user = models.OneToOneField("authentication.ManthanoUser", on_delete=models.CASCADE)
+    user = models.OneToOneField(ManthanoUser, on_delete=models.CASCADE)
 
     profile_picture = models.ImageField(null=True, upload_to='profile_images/')
     profile_background = models.ImageField(null=True, upload_to='profile_backgrounds/')
