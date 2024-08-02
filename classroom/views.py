@@ -26,6 +26,8 @@ class CreateClassroomView(views.APIView):
 
 
 class JoinClassroomView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, format=None):
         classroom_code = request.data.get('classroom_code')
         try:
