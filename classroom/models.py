@@ -10,6 +10,7 @@ class Classroom(models.Model):
     schedule = models.ImageField(upload_to='uploads/schedule_%Y_%m_%d', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    professor_managed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
