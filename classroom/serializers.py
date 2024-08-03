@@ -12,9 +12,21 @@ class ClassroomSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
-        ret['channels'] = ChannelSerializer(instance.channels, many=True).data
-        ret['jitsi_channels'] = JitsiChannelSerializer(instance.jitsi_channels, many=True).data
-        ret['users'] = ClassroomUserSerializer(instance.users, many=True).data
+        if hasattr(instance, 'channels'):
+            ret['channels'] = ChannelSerializer(instance.channels, many=True).data
+        else:
+            ret['channels'] = []
+
+        if hasattr(instance, 'jitsi_channels'):
+            ret['jitsi_channels'] = JitsiChannelSerializer(instance.jitsi_channels, many=True).data
+        else:
+            ret['jitsi_channels'] = []
+
+        if hasattr(instance, 'users'):
+            ret['users'] = ClassroomUserSerializer(instance.users, many=True).data
+        else:
+            ret['users'] = []
+
         return ret
 
 

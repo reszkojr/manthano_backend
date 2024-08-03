@@ -18,10 +18,19 @@ class CreateClassroomView(views.APIView):
 
     def post(self, request, format=None):
         serializer = ClassroomSerializer(data=request.data)
+        user = request.user
+
         if serializer.is_valid():
             serializer.save()
+            user.classroom = serializer.instance
+            user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
+            if 'code' in serializer.errors:
+                errors = serializer.errors['code']
+                for error in errors:
+                    if 'already exists' in error:
+                        return Response("A classroom with this code already exists.", status=status.HTTP_409_CONFLICT)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
