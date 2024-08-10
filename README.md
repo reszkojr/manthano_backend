@@ -96,8 +96,7 @@ Probabilidade: média
 Impacto: médio
 Mitigação: estudar os concorrentes e identificar onde se diferenciam e onde falham, comparando os resultados obtidos com o cenário atual oferecido pelo projeto.
 
-# 4. Conclusão
-a. Recursos utilizados:
+# 4. Recursos utilizados:
 
 | Tecnologia  | Versão   | Descrição                                                                 |
 |-------------|----------|---------------------------------------------------------------------------|
