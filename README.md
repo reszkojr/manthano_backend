@@ -131,7 +131,7 @@ Node.js e NPM.
 a. Primeiro, clone o repositório do projeto para o seu ambiente de desenvolvimento local.
 
 ```bash
-git clone &lt;URL_DO_REPOSITORIO&gt;
+git clone https://github.com/reszkojr/manthano-backend;
 cd manthano
 ```
 b. Crie e ative um ambiente virtual Python
