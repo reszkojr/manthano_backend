@@ -121,3 +121,51 @@ a. Recursos utilizados:
 | Typescript  | v5.0.2   | Superconjunto sintático JavaScript com suporte a tipagem estética         |
 | Vite        | v4.5.2   | Servidor de desenvolvimento local                                         |
 | Axios       | v1.5.1   | Biblioteca cliente HTTP para o navegador e Node.JS
+
+# 5. Instruções de Download e Execução
+
+## 5.1 Requisitos
+
+Antes de iniciar, certifique-se de que você possui os seguintes requisitos instalados no seu sistema:
+Python 3.9 ou superior;
+Git;
+Node.js e NPM.
+
+## 5.2 Passos para Configuração e Execução
+
+a. Primeiro, clone o repositório do projeto para o seu ambiente de desenvolvimento local.
+
+```bash
+git clone &lt;URL_DO_REPOSITORIO&gt;
+cd manthano
+```
+b. Crie e ative um ambiente virtual Python
+```bash
+python -m venv venv
+source venv/bin/activate  # Para Linux e macOS
+venv\Scripts\activate  # Para Windows
+```
+c. Instale as Dependências do Back-end
+
+```bash
+pip install -r requirements.txt
+```
+d. Configure o Ambiente
+
+Crie um arquivo ```.env``` na raiz do projeto e configure as variáveis de ambiente necessárias, seguindo o exemplo do arquivo ```.env.example```
+
+e. Execute as Migrações do Banco de Dados
+
+```bash
+python manage.py migrate
+```
+f. Execute o Servidor de Desenvolvimento do Back-end
+
+```bash
+cd ..
+python manage.py runserver
+```
+
+O servidor será aberto no endereço ```http://127.0.0.1:8000/```.
+
+Agora, o ambiente de desenvolvimento do Manthano está configurado e pronto para uso!
