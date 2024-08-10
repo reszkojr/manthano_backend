@@ -3,11 +3,6 @@
 
 # 1. Identificação
 
-a. Identidade Visual do projeto:
-
-<img src="https://lh3.googleusercontent.com/u/0/drive-viewer/AKGpihaWRwJ6LYfaraJar27B89ZOC2Xcg0WBCEeTloNOE7EJ4seyKoopEh0LbMTnuEN6rvze4Hb1LkGf1SxFGsaMpR6JQYqNdA=w1920-h957" width="900px">
-<br>
-
 a. Integrantes da equipe:
 - Fabio S. Reszko Jr.
 
@@ -15,7 +10,7 @@ b. Professor Orientador:
 
 - Eduardo Tieppo
 
-c. Data criação do documento:
+c. Data de criação do documento:
 - 05/03/2024
 # 2. Introdução
 
