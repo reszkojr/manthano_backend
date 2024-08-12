@@ -31,13 +31,13 @@ class ManthanoUser(AbstractUser):
     first_name = models.CharField('First name', max_length=32)
     last_name = models.CharField('Last name', max_length=255)
     email = models.EmailField('Email address', max_length=255, unique=True)
-    academic_email = models.CharField(max_length=255, unique=True, default='')
+    academic_email = models.CharField(max_length=255, unique=True, null=True)
     is_admin = models.BooleanField('Admin status', default=False)
     is_active = models.BooleanField('Active', default=True)
     date_joined = models.DateTimeField('Date joined', auto_now_add=True)
     is_teacher = models.BooleanField('Staff', default=False)
 
-    classroom = models.ForeignKey('classroom.Classroom', on_delete=models.CASCADE, related_name='users', null=True)
+    classroom = models.ForeignKey('classroom.Classroom', on_delete=models.SET_NULL, related_name='users', null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'password']
@@ -47,6 +47,12 @@ class ManthanoUser(AbstractUser):
     class Meta:
         verbose_name = 'username'
         verbose_name_plural = 'usernames'
+
+    def is_student(self):
+        return hasattr(self, 'user_student')
+
+    def is_professor(self):
+        return hasattr(self, 'user_professor')
 
     def __str__(self):
         return self.username

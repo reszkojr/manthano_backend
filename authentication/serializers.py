@@ -45,12 +45,30 @@ class UserSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = ('id', 'username,' 'email', 'first_name', 'last_name')
 
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['enrollment']
+
+class ProfessorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Professor
+        fields = ['academic_rank', 'subjects']
 
 class ClassroomUserSerializer(serializers.ModelSerializer):
+    professor = ProfessorSerializer(read_only=True, source='user_professor')
+    student = StudentSerializer(read_only=True, source='user_student')
+    role = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
-        fields = ('id', 'first_name', 'last_name', 'username')
+        fields = ('id', 'first_name', 'last_name', 'username', 'student', 'professor', 'role')
+
+    def get_role(self, instance):
+        if instance.is_student():
+            return 'student'
+        if instance.is_professor():
+            return 'professor'
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
@@ -59,13 +77,3 @@ class ClassroomUserSerializer(serializers.ModelSerializer):
         return ret
 
 
-class StudentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Student
-        fields = ['enrollment']
-
-
-class ProfessorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Professor
-        fields = ['academic_rank', 'subjects']

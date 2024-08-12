@@ -1,33 +1,32 @@
 from rest_framework import serializers, validators
 
-from authentication.serializers import ClassroomUserSerializer
+from authentication.serializers import ClassroomUserSerializer, UserSerializer
 
 from .models import *
 
-
 class ClassroomSerializer(serializers.ModelSerializer):
+    channels = serializers.SerializerMethodField()
+    jitsi_channels = serializers.SerializerMethodField()
+    users = serializers.SerializerMethodField()
+
     class Meta:
         model = Classroom
         fields = '__all__'
 
-    def to_representation(self, instance):
-        ret = super().to_representation(instance)
+    def get_channels(self, instance):
         if hasattr(instance, 'channels'):
-            ret['channels'] = ChannelSerializer(instance.channels, many=True).data
-        else:
-            ret['channels'] = []
+            return ChannelSerializer(instance.channels, many=True).data
+        return []
 
+    def get_jitsi_channels(self, instance):
         if hasattr(instance, 'jitsi_channels'):
-            ret['jitsi_channels'] = JitsiChannelSerializer(instance.jitsi_channels, many=True).data
-        else:
-            ret['jitsi_channels'] = []
+            return JitsiChannelSerializer(instance.jitsi_channels, many=True).data
+        return []
 
+    def get_users(self, instance):
         if hasattr(instance, 'users'):
-            ret['users'] = ClassroomUserSerializer(instance.users, many=True).data
-        else:
-            ret['users'] = []
-
-        return ret
+            return ClassroomUserSerializer(instance.users, many=True).data
+        return []
 
 
 class ChannelSerializer(serializers.ModelSerializer):
